@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="files1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Backend/StudyTime/storage/app/public/files.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
