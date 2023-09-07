@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -43,11 +44,22 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
+
+
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
-        return response()->json(['token' => $token]);
+        $user = JWTAuth::user();
+        $userId = $user->id;
+
+        return response()->json(['token' => $token, 'userId' => $userId]);
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
     public function profile()

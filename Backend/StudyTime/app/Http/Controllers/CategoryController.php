@@ -26,7 +26,7 @@ class CategoryController extends Controller
             return response()->json(['error' => 'Category not found'], 404);
         }
 
-        return response()->json(compact('category'));
+        return response()->json($category);
     }
 
     public function createCategory(Request $request):void

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Rating;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,16 @@ class RatingController extends Controller
         return Rating::all();
     }
 
+    public function getAllRatingsByCourseId($courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        $courseRatings = Rating::where('course_id', $courseId)
+            ->with('commenter:id,name') // Eager load instructor data
+            ->get();
+
+        return response()->json($courseRatings);
+    }
+
     public function getRating($id)
     {
         $rating = Rating::find($id);
@@ -28,11 +39,14 @@ class RatingController extends Controller
         return response()->json(compact('rating'));
     }
 
-    public function createRating(Request $request) {
+    public function createRating(Request $request)
+    {
 
         $validated = $request->validate([
-            "comment",
-            "ratingStatus" => "required | string"
+            "comment" => "string",
+            "star" => "required | string",
+            "instructor_id" => "required | integer",
+            "course_id" => "required | integer"
         ]);
 
         $rating = Rating::create($validated);
@@ -48,7 +62,7 @@ class RatingController extends Controller
         }
 
         $validatedData = $request->validate([
-            "comment"=> 'string',
+            "comment" => 'string',
             "ratingStatus" => "string"
         ]);
 

@@ -20,6 +20,11 @@ class CourseController extends ApiController
         return Course::all();
     }
 
+    public function getAllCoursesByCategory(int $categoryId)
+    {
+         return response()->json(Course::where('category_id', $categoryId)-> get());
+    }
+
     public function getCourse($id)
     {
         $course = Course::find($id);
@@ -89,7 +94,7 @@ class CourseController extends ApiController
         $filePath = $request->file('file')->store('files', 'public');
 
         $course->files()->create([
-            'name' => $request->input('name') ?? 'test',
+            'name' => $request->input('name') ?? '',
             'path' => $filePath,
             'type' => $fileType,
             'description' => '',
@@ -104,7 +109,7 @@ class CourseController extends ApiController
         $filePaths = [];
 
         foreach ($course->files as $file) {
-            $filePaths[] = storage_path('app/public/' . $file->path); // Adjust the path property based on your file model structure
+            $filePaths[] = storage_path('app/public/' . $file->path);
         }
 
         // Create a temporary ZIP archive

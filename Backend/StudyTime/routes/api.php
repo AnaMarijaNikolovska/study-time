@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\RatingController;
@@ -29,7 +30,6 @@ Route::post('user/create', [UserController::class, 'create']);
 
 
 Route::group(['middleware' => 'cors'], function () {
-
     //category
     Route::get('category', [CategoryController::class, 'getAllCategories']);
     Route::get('category/{id}', [CategoryController::class, 'getCategory']);
@@ -43,6 +43,8 @@ Route::group(['middleware' => 'cors'], function () {
     Route::put('courses/update/{id}', [CourseController::class, 'updateCourse']);
     Route::delete('courses/delete/{id}', [CourseController::class, 'deleteCourse']);
     Route::get('courses/{id}/files', [CourseController::class, 'getFiles']);
+    Route::get('courses/category/{categoryId}', [CourseController::class, 'getAllCoursesByCategory']);
+    Route::get('courses/{courseId}/ratings', [RatingController::class, 'getAllRatingsByCourseId']);
 
     //rating
     Route::get('ratings', [RatingController::class, 'getAllRatings']);
@@ -65,7 +67,12 @@ Route::group(['middleware' => 'cors'], function () {
 });
 
 Route::middleware(['jwt.auth'])->group(function () {
-    Route::get('profile', [UserController::class, 'profile']);
-    Route::post('category/create', [CategoryController::class, 'createCategory']);
+    Route::get('user/profile', [UserController::class, 'profile']);
+    Route::post('user/logout', [UserController::class, 'logout']);
+//    Route::post('category/create', [CategoryController::class, 'createCategory']);
     Route::post('courses/{id}/files', [CourseController::class, 'storeFile']);
+});
+
+Route::middleware(['jwt.auth', 'jwt.role:' . UserRole::INSTRUCTOR->value])->group(function () {
+    Route::post('category/create', [CategoryController::class, 'createCategory']);
 });

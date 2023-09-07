@@ -16,4 +16,9 @@ class Course extends Model
     {
         return $this->hasMany(CourseFile::class);
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }
