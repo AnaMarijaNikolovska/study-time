@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Enums\GenderEnum;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -67,7 +68,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Rating::class);
     }
 
-    public function courses(): HasMany{
+    public function lectures(): HasMany
+    {
         return $this->hasMany(Course::class);
+    }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_user');
     }
 }

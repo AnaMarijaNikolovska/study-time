@@ -1,4 +1,4 @@
-import {ColorModeScript} from '@chakra-ui/react';
+import {ColorModeScript, theme} from '@chakra-ui/react';
 import React, {StrictMode} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
@@ -8,7 +8,7 @@ import {ChakraProvider} from '@chakra-ui/react';
 
 import {
     createBrowserRouter,
-    createRoutesFromElements,
+    createRoutesFromElements, Navigate,
     Route,
     RouterProvider,
 } from 'react-router-dom';
@@ -23,6 +23,7 @@ import CourseDetailsPage from './pages/courses/CourseDetailsPage';
 import CategoryDetailsPage from './pages/category/CategoryDetailsPage';
 import UserDetailsPage from './pages/user/UserDetailsPage';
 import {AccessTokenProvider} from './context/AccessTokenContext';
+import MyListPage from "./pages/user/MyListPage";
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
@@ -42,16 +43,19 @@ const router = createBrowserRouter(
             <Route path='/categories/addCategory' element={<AddCategory/>}/>
             <Route path='/categories/:id' element={<CategoryDetailsPage/>}/>
             <Route path='/users/:id' element={<UserDetailsPage/>}/>
+            <Route path='/myList' element={<MyListPage/>}/>
+            <Route path='/*' element={<Navigate to="/"/>}/>
+
         </Route>,
     ),
 );
 
 root.render(
     <StrictMode>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
             <ColorModeScript/>
             <AccessTokenProvider>
-                <RouterProvider router={router}/>
+                <RouterProvider router={router} />
             </AccessTokenProvider>
         </ChakraProvider>
     </StrictMode>,

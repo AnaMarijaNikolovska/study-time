@@ -22,9 +22,11 @@ import {useParams} from 'react-router';
 import JSZip from 'jszip';
 import InstructorCard from '../../components/InstructorCard';
 import CourseRatings from '../../components/CourseRatings';
-import {DeleteIcon, StarIcon} from '@chakra-ui/icons';
+import {AddIcon, CheckIcon, DeleteIcon, StarIcon} from '@chakra-ui/icons';
 import {Link} from 'react-router-dom';
 import {useAccessTokenState} from "../../context/AccessTokenContext";
+import {AttachCourse, ListUserCoursers} from "../../services/UserService";
+import {DeleteRating} from "../../services/RatingService";
 
 export default function CourseDetailsPage({id}) {
     const params = useParams();
@@ -42,6 +44,7 @@ export default function CourseDetailsPage({id}) {
 
     const [videos, setVideos] = useState([]);
     const [pdfFile, setPdfFile] = useState(null);
+    const [courseBelongsToUser, setCourseBelongsToUser] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -82,7 +85,26 @@ export default function CourseDetailsPage({id}) {
             setCourse(r.data);
             fetchData();
         });
-    }, [authUser]);
+    }, []);
+
+    useEffect(() => {
+        console.log(authUser, 'aa')
+        if (!authUser && !course) {
+            return;
+        }
+
+        ListUserCoursers(authUser.id)
+            .then(res => {
+                setCourseBelongsToUser(res.data.some(x => x.id === course.id));
+            })
+
+    }, [authUser])
+
+    const addToMyList = () => {
+        AttachCourse(authUser.id, course.id)
+            .then(() => setCourseBelongsToUser(true))
+            .catch(err => console.log(err));
+    };
 
     return (
         <Container maxW={'7xl'}>
@@ -152,7 +174,17 @@ export default function CourseDetailsPage({id}) {
 
                                 {authUser?.id === course.instructor_id &&
                                     <Button leftIcon={<DeleteIcon/>} colorScheme='red'
-                                            variant={"solid"}>Delete </Button>
+                                            variant={"solid"}>Delete</Button>
+                                }
+
+                                {authUser ? !courseBelongsToUser ?
+                                        <Button onClick={addToMyList} leftIcon={<AddIcon/>} colorScheme='linkedin'
+                                                variant={"solid"}>Add to my list </Button>
+                                        : <Button disabled={true} rightIcon={< CheckIcon/>} colorScheme='teal'
+                                                  variant='outline'>
+                                            Already in your list
+                                        </Button>
+                                    : null
                                 }
 
 

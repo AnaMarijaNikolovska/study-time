@@ -12,7 +12,7 @@ class JwtRoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
@@ -22,8 +22,9 @@ class JwtRoleMiddleware
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+//        dd($role);
         // Check if the user's role matches the required role
-        if ($user->role !== $role) {
+        if ($user->role->value !== $role) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
