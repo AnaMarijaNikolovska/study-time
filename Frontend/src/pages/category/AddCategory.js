@@ -15,8 +15,10 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { AddCategory } from '../../services/CategoryService';
+import {useNavigate} from "react-router-dom";
 
 export default function AddEditCategory() {
+  const navigate = useNavigate();
 
   const initialCategory = {
     name: '',
@@ -32,7 +34,8 @@ export default function AddEditCategory() {
   const handleSubmit = event => {
     event.preventDefault();
     AddCategory(category).then(r => {
-      console.log(r.data);
+      window.alert('Succesfully added new category');
+      navigate('/categories');
     });
   };
 
