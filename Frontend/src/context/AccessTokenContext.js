@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState } from 'react';
 
-const AccessTokenStateContext = createContext({ accessToken: undefined, userId: undefined });
-const AccessTokenUpdaterContext = createContext({ setAccessToken: {}, setUserId: {} });
+const AccessTokenStateContext = createContext({ accessToken: undefined, authUser: undefined });
+const AccessTokenUpdaterContext = createContext({ setAccessToken: {}, setAuthUser: {} });
 
 export const AccessTokenProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(undefined);
-  const [userId, setUserId] = useState(undefined);
+  const [authUser, setAuthUser] = useState(undefined);
 
   return (
-    <AccessTokenStateContext.Provider value={{ accessToken, userId }}>
-      <AccessTokenUpdaterContext.Provider value={{ setAccessToken, setUserId }}>
+    <AccessTokenStateContext.Provider value={{ accessToken, authUser: authUser }}>
+      <AccessTokenUpdaterContext.Provider value={{ setAccessToken, setAuthUser: setAuthUser }}>
         {children}
       </AccessTokenUpdaterContext.Provider>
     </AccessTokenStateContext.Provider>
@@ -21,7 +21,7 @@ export function useAccessTokenState() {
 
   return {
     token: context.accessToken,
-    userId: context.userId,
+    authUser: context.authUser,
   };
 }
 
@@ -30,6 +30,6 @@ export function useAccessTokenUpdater() {
 
   return {
     setAccessToken: context.setAccessToken,
-    setUserId: context.setUserId,
+    setAuthUser: context.setAuthUser,
   };
 }

@@ -22,7 +22,7 @@ class CourseController extends ApiController
 
     public function getAllCoursesByCategory(int $categoryId)
     {
-         return response()->json(Course::where('category_id', $categoryId)-> get());
+        return response()->json(Course::where('category_id', $categoryId)->get());
     }
 
     public function getCourse($id)
@@ -135,8 +135,7 @@ class CourseController extends ApiController
 
                 return $response;
             } else {
-                // Handle the case where the ZIP archive couldn't be found
-                return response('ZIP archive not found', 404);
+                return response()->json([]);
             }
         } else {
             // Handle the case where the ZIP archive couldn't be created

@@ -18,28 +18,21 @@ import RatingMapper from './RatingMapper';
 
 export default function AddUpdateCourseRating({ course, toggleRatingChanges, setToggleRatingChanges }) {
 
-  const { userId } = useAccessTokenState();
+  const { authUser } = useAccessTokenState();
 
   const initialRating = {
     comment: '',
     star: RatingString[0],
-    instructor_id: userId ?? 0,
+    commenter_id: authUser?.id ?? 0,
     course_id: course.id,
   };
 
   const [rating, setRating] = useState(initialRating);
 
-  useEffect(() => {
-    setRating({ ...rating, instructor_id: userId });
-  }, [userId]);
 
   const ratingChanged = newRating => {
     setRating({ ...rating, star: RatingString[newRating] });
   };
-
-  useEffect(() => {
-    setRating(initialRating);
-  }, []);
 
   const handleChange = name => event => {
     setRating({ ...rating, [name]: event.target.value });
@@ -48,9 +41,10 @@ export default function AddUpdateCourseRating({ course, toggleRatingChanges, set
   const handleSubmit = event => {
     event.preventDefault();
 
+    setRating({ ...rating, commenter_id: authUser?.id });
+
     AddRating(rating)
       .then(() => {
-        // window.location.reload();
         setRating(initialRating);
         setToggleRatingChanges(!toggleRatingChanges);
         window.alert('success');

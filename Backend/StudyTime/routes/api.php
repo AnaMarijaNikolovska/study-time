@@ -17,19 +17,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-//
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//
-////    Route::post('create', [\App\Http\Controllers\CourseController::class, 'createCourse']);
-//});
-
-Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
-Route::post('user/create', [UserController::class, 'create']);
-
 
 Route::group(['middleware' => 'cors'], function () {
+    //user
+    Route::get('users', [UserController::class, 'getAll']);
+    Route::get('users/{id}', [UserController::class, 'getUser']);
+    Route::post('users/register', [UserController::class, 'register']);
+
     //category
     Route::get('category', [CategoryController::class, 'getAllCategories']);
     Route::get('category/{id}', [CategoryController::class, 'getCategory']);
@@ -51,7 +46,6 @@ Route::group(['middleware' => 'cors'], function () {
     Route::get('ratings/{id}', [RatingController::class, 'getRating']);
     Route::post('ratings/create', [RatingController::class, 'createRating']);
     Route::put('ratings/update/{id}', [RatingController::class, 'updateRating']);
-    Route::delete('ratings/delete/{id}', [RatingController::class, 'deleteRating']);
 
 //    //my list
 //    Route::get('mylist', [RatingController::class, 'getAllRatings']);
@@ -59,20 +53,18 @@ Route::group(['middleware' => 'cors'], function () {
 //    Route::post('mylist/create', [RatingController::class, 'createRating']);
 //    Route::put('mylist/update/{id}', [RatingController::class, 'updateRating']);
 //    Route::delete('mylist/delete/{id}', [RatingController::class, 'deleteRating']);
-
-    //user
-    Route::get('user', [UserController::class, 'getAll']);
-    Route::get('user/findByUsername/{username}', [UserController::class, 'getByUsername']);
-//    Route::post('user/create', [UserController::class, 'create']);
 });
 
 Route::middleware(['jwt.auth'])->group(function () {
-    Route::get('user/profile', [UserController::class, 'profile']);
-    Route::post('user/logout', [UserController::class, 'logout']);
-//    Route::post('category/create', [CategoryController::class, 'createCategory']);
-    Route::post('courses/{id}/files', [CourseController::class, 'storeFile']);
+    Route::get('auth-user', [UserController::class, 'profile']);
+    Route::post('users/logout', [UserController::class, 'logout']);
+
+    Route::delete('ratings/delete/{id}', [RatingController::class, 'deleteRating']);
+
+    Route::middleware(['jwt.role:' . UserRole::INSTRUCTOR->value])->group(function () {
+        Route::post('category/create', [CategoryController::class, 'createCategory']);
+        Route::post('courses/{id}/files', [CourseController::class, 'storeFile']);
+
+    });
 });
 
-Route::middleware(['jwt.auth', 'jwt.role:' . UserRole::INSTRUCTOR->value])->group(function () {
-    Route::post('category/create', [CategoryController::class, 'createCategory']);
-});

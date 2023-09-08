@@ -10,7 +10,7 @@ class Rating extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['comment', 'star', 'course_id', 'instructor_id'];
+    protected $fillable = ['comment', 'star', 'course_id', 'commenter_id'];
     protected $casts = [
         'star' => RatingStatusEnum::class
     ];

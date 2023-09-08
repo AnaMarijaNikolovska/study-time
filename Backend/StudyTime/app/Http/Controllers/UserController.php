@@ -9,11 +9,10 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'create']]);
     }
 
     public function getAll()
@@ -21,24 +20,36 @@ class UserController extends Controller
         return User::all();
     }
 
-    public function create(Request $data)
+    public function register(Request $data)
     {
         $validated = $data->validate([
             "name" => 'required|string',
+            "surname" => 'required|string',
             "email" => "required|string",
             "password" => "required|string",
+            "role" => "required|string",
+            "gender" => "string",
         ]);
 
         return User::create([
             'name' => $validated['name'],
+            'surname' => $validated['surname'],
+            'role' => $validated['role'],
+            'gender' => $validated['gender'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
     }
 
-    public function getByUsername(string $username)
+    public function getUser($id)
     {
-        return User::where('name', $username)->firstOrFail();
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        return response()->json($user);
     }
 
     public function login(Request $request)
@@ -51,9 +62,8 @@ class UserController extends Controller
         }
 
         $user = JWTAuth::user();
-        $userId = $user->id;
 
-        return response()->json(['token' => $token, 'userId' => $userId]);
+        return response()->json(['token' => $token, 'user' => $user]);
     }
 
     public function logout()

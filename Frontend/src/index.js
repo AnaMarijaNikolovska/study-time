@@ -1,16 +1,16 @@
-import { ColorModeScript } from '@chakra-ui/react';
-import React, { StrictMode } from 'react';
+import {ColorModeScript} from '@chakra-ui/react';
+import React, {StrictMode} from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
-import { ChakraProvider } from '@chakra-ui/react';
+import {ChakraProvider} from '@chakra-ui/react';
 
 import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
+    createBrowserRouter,
+    createRoutesFromElements,
+    Route,
+    RouterProvider,
 } from 'react-router-dom';
 import Register from './pages/user/Register';
 import LogIn from './pages/user/LogIn';
@@ -22,38 +22,39 @@ import CoursesPage from './pages/courses/CoursesPage';
 import CourseDetailsPage from './pages/courses/CourseDetailsPage';
 import CategoryDetailsPage from './pages/category/CategoryDetailsPage';
 import UserDetailsPage from './pages/user/UserDetailsPage';
-import { AccessTokenProvider } from './context/AccessTokenContext';
+import {AccessTokenProvider} from './context/AccessTokenContext';
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
 
 const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path='/' element={<App />}>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/register' element={<Register />} />
-      <Route path='/login' element={<LogIn />} />
-      <Route path='/userDetails/' element={<UserDetailsPage />} />
-      <Route path='/courses' element={<CoursesPage />} />
-      <Route path='/courses/:id' element={<CourseDetailsPage />} />
-      <Route path='/courses/addCourse' element={<AddCoursePage />} />
-      <Route path='/categories' element={<CategoriesPage />} />
-      <Route path='/categories/addCategory' element={<AddCategory />} />
-      <Route path='/categories/:id' element={<CategoryDetailsPage />} />
-    </Route>,
-  ),
+    createRoutesFromElements(
+        <Route path='/' element={<App/>}>
+            <Route path='/' element={<HomePage/>}/>
+            <Route path='/register' element={<Register/>}/>
+            <Route path='/login' element={<LogIn/>}/>
+            <Route path='/userDetails/' element={<UserDetailsPage/>}/>
+            <Route path='/courses' element={<CoursesPage/>}/>
+            <Route path='/courses/:id' element={<CourseDetailsPage/>}/>
+            <Route path='/courses/addCourse' element={<AddCoursePage/>}/>
+            <Route path='/categories' element={<CategoriesPage/>}/>
+            <Route path='/categories/addCategory' element={<AddCategory/>}/>
+            <Route path='/categories/:id' element={<CategoryDetailsPage/>}/>
+            <Route path='/users/:id' element={<UserDetailsPage/>}/>
+        </Route>,
+    ),
 );
 
 root.render(
-  <StrictMode>
-    <ChakraProvider>
-      <ColorModeScript />
-      <AccessTokenProvider>
-        <RouterProvider router={router} />
-      </AccessTokenProvider>
-    </ChakraProvider>
-  </StrictMode>,
+    <StrictMode>
+        <ChakraProvider>
+            <ColorModeScript/>
+            <AccessTokenProvider>
+                <RouterProvider router={router}/>
+            </AccessTokenProvider>
+        </ChakraProvider>
+    </StrictMode>,
 );
 
 // If you want your app to work offline and load faster, you can change

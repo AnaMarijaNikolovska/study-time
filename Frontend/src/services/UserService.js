@@ -1,11 +1,10 @@
 import axios from "../AxiosConfig";
 
-const usersRoute = "/user";
+const usersRoute = "/users";
 
 const UserRole = {
-  User: 'User',
-  LocationOwner: 'LocationOwner',
-  Admin: 'Admin'
+  User: 'Regular User',
+  Instructor: 'Instructor'
 }
 
 const Gender = {
@@ -20,12 +19,12 @@ const GetAllUsers = (role = null) => {
   });
 }
 
-const GetUser = (id) => {
-  return axios.get(`${usersRoute}/${id}`);
+const GetUser = async (id) => {
+  return await axios.get(`${usersRoute}/${id}`);
 }
 
 const GetAuthUser = () => {
-  return axios.get(`${usersRoute}/profile`);
+  return axios.get(`auth-user`);
 }
 
 const LoginUser = (loginForm) => {
@@ -37,7 +36,7 @@ const LogoutUser = () => {
 }
 
 const RegisterUser = (userForm) => {
-  return axios.post(`${usersRoute}/create`, userForm);
+  return axios.post(`${usersRoute}/register`, userForm);
 }
 
 const EditUser = (userId, userForm) => {

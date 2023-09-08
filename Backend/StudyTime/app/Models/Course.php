@@ -10,7 +10,7 @@ class Course extends Model
     use HasFactory;
 
     protected $primaryKey = "id";
-    protected $fillable = ['name', 'description', 'category_id'];
+    protected $fillable = ['name', 'description', 'category_id', 'instructor_id'];
 
     public function files()
     {

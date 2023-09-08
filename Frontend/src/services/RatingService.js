@@ -23,7 +23,7 @@ const EditRating= (id, formData) => {
 }
 
 const DeleteRating = (id) => {
-  return axios.delete(`${ratingRoute}/${id}`);
+  return axios.delete(`${ratingRoute}/delete/${id}`);
 }
 
 

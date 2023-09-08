@@ -18,7 +18,7 @@ import CategoryDetailsPage from './pages/category/CategoryDetailsPage';
 
 function App() {
 
-  const { setAccessToken, setUserId } = useAccessTokenUpdater();
+  const { setAccessToken, setAuthUser } = useAccessTokenUpdater();
 
   useEffect(() => {
     if (sessionStorage.getItem('bearerToken')) {
@@ -27,14 +27,14 @@ function App() {
 
       GetAuthUser()
         .then(r => {
-          setUserId(r.data.user.id);
+          setAuthUser(r.data.user);
         })
         .catch(err => {
           sessionStorage.removeItem('bearerToken');
           axios.defaults.headers['Authorization'] = null;
           window.alert('Your session has expired, try to log in again');
           setAccessToken(null);
-          setUserId(null);
+          setAuthUser(null);
         });
     }
 
@@ -51,7 +51,7 @@ function App() {
         <Route path='/login' element={<LogIn />} />
 
         {/*for user*/}
-        <Route path='/user/:id' element={<UserDetailsPage />} />
+        <Route path='/users/:id' element={<UserDetailsPage />} />
 
         {/*for course*/}
         <Route path='/courses' element={<CoursesPage />} />

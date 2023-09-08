@@ -1,51 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, CardBody, Flex, Heading, SimpleGrid, Tooltip } from '@chakra-ui/react';
-import { GetAllCourses } from '../../services/CoursesService';
-import FileUploader from '../../components/FileUploader';
-import { Link } from 'react-router-dom';
-import { AddIcon } from '@chakra-ui/icons';
+import React, {useEffect, useState} from 'react';
+import {Box, Flex, Heading, SimpleGrid, Tooltip} from '@chakra-ui/react';
+import {GetAllCourses} from '../../services/CoursesService';
+import {Link} from 'react-router-dom';
 import CourseCard from '../../components/CourseCard';
+import {useAccessTokenState} from "../../context/AccessTokenContext";
+import {UserRole} from "../../services/UserService";
 
 export default function CoursesPage() {
-  const [courses, setCourses] = useState(null);
+    const {authUser} = useAccessTokenState();
+    const [courses, setCourses] = useState(null);
 
-  const [showAddCourseModal, setShowAddCourseModal] = useState(false);
+    const [showAddCourseModal, setShowAddCourseModal] = useState(false);
 
-  useEffect(() => {
-    GetAllCourses()
-      .then(r => setCourses(r.data));
-  }, []);
+    useEffect(() => {
+        GetAllCourses()
+            .then(r => setCourses(r.data));
+    }, [authUser]);
 
-  return (
-    <Box>
-      <Flex  justifyContent='center' >
-        <Flex margin={'60px'} border={'2px solid transparent'} padding={'10px'}
-              _hover={{
-                color: 'teal.500',
-                border : '2px solid',
-                padding : '10px',
-                borderRadius : '20px'
-              }}>
-          <Link to={'/courses/addCourse'}>
-            <Tooltip marginBottom={'10px'} label='Click here to add a new course' placement='top' hasArrow>
-              <Heading>
-                Add Course
-              </Heading>
-            </Tooltip>
-            {/*<Button as={AddIcon} size={'sm'}></Button>*/}
-          </Link>
-        </Flex>
-      </Flex>
-    <Flex justifyContent={'space-evenly'}  >
-      <SimpleGrid columns={4} spacing={9}>
-      {courses && courses.length > 0 && courses.map((course, index) =>
-        <Link key={index} to={`/courses/${course.id}`}>
-          <CourseCard course={course}/>
-        </Link>
-)}
-      </SimpleGrid>
-    </Flex>
-    </Box>
+    return (
+        <Box>
+            <Flex justifyContent='center'>
+                <Flex margin={'60px'} border={'2px solid transparent'} padding={'10px'}
+                      _hover={{
+                          color: 'teal.500',
+                          border: '2px solid',
+                          padding: '10px',
+                          borderRadius: '20px'
+                      }}>
+                    {authUser?.role === UserRole.Instructor ?
+                        <Link to={'/courses/addCourse'}>
+                            <Tooltip marginBottom={'10px'} label='Click here to add a new course' placement='top'
+                                     hasArrow>
+                                <Heading>
+                                    Add Course
+                                </Heading>
+                            </Tooltip>
+                        </Link>
+                        : <Heading>
+                            Courses Page
+                        </Heading>
+                    }
+                </Flex>
+            </Flex>
+            <Flex justifyContent={'space-evenly'}>
+                <SimpleGrid columns={4} spacing={9}>
+                    {courses && courses.length > 0 && courses.map((course, index) =>
+                        <Link key={index} to={`/courses/${course.id}`}>
+                            <CourseCard course={course}/>
+                        </Link>
+                    )}
+                </SimpleGrid>
+            </Flex>
+        </Box>
 
-  );
+    );
 }

@@ -45,7 +45,7 @@ class RatingController extends Controller
         $validated = $request->validate([
             "comment" => "string",
             "star" => "required | string",
-            "instructor_id" => "required | integer",
+            "commenter_id" => "required | integer",
             "course_id" => "required | integer"
         ]);
 
