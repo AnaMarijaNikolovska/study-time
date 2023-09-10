@@ -3,7 +3,7 @@ import {ChakraProvider, theme} from '@chakra-ui/react';
 import {Navigate, Route, Routes} from 'react-router-dom';
 import Register from './pages/user/Register';
 import LogIn from './pages/user/LogIn';
-import AddCoursePage from './pages/courses/AddCoursePage';
+import AddEditCourseComponent from './pages/courses/AddEditCourseComponent';
 import HomePage from './pages/HomePage';
 import AddCategory from './pages/category/AddCategory';
 import CategoriesPage from './pages/category/CategoriesPage';
@@ -58,7 +58,7 @@ function App() {
                 {/*for course*/}
                 <Route path='/courses' element={<CoursesPage/>}/>
                 <Route path='/courses/:id' element={<CourseDetailsPage/>}/>
-                <Route path='/courses/addCourse' element={<AddCoursePage/>}/>
+                <Route path='/courses/addCourse' element={<AddEditCourseComponent/>}/>
 
                 {/*for category*/}
                 <Route path='/categories' element={<CategoriesPage/>}/>

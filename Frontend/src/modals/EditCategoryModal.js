@@ -23,8 +23,6 @@ export default function EditCategoryModal({ isOpen, onOpen, onClose, categoryToE
     },
   );
   const handleChange = name => event => {
-    console.log(event.target.name, 'changeee');
-    console.log(category, 'catacat');
     setCategory({ ...category, [name]: event.target.value });
   };
 

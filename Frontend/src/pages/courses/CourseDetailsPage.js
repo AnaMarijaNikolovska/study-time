@@ -8,12 +8,12 @@ import {
     Heading, Icon,
     Image,
     List,
-    ListItem,
+    ListItem, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay,
     SimpleGrid,
     Stack,
     StackDivider,
     Text, Tooltip,
-    useColorModeValue,
+    useColorModeValue, useDisclosure,
     VStack,
 } from '@chakra-ui/react';
 import React, {useEffect, useState} from 'react';
@@ -25,12 +25,16 @@ import CourseRatings from '../../components/CourseRatings';
 import {AddIcon, CheckIcon, DeleteIcon, StarIcon} from '@chakra-ui/icons';
 import {Link} from 'react-router-dom';
 import {useAccessTokenState} from "../../context/AccessTokenContext";
-import {AttachCourse, ListUserCoursers} from "../../services/UserService";
+import {AttachCourse, ListUserCoursers, UserRole} from "../../services/UserService";
 import {DeleteRating} from "../../services/RatingService";
+import EditCategoryModal from "../../modals/EditCategoryModal";
+import AddEditCourseComponent from "./AddEditCourseComponent";
 
 export default function CourseDetailsPage({id}) {
     const params = useParams();
     const {authUser} = useAccessTokenState();
+    const {isOpen, onOpen, onClose} = useDisclosure();
+
 
     const [course, setCourse] = useState(null);
     const [averageRating, setAverageRating] = useState(0);
@@ -85,10 +89,9 @@ export default function CourseDetailsPage({id}) {
             setCourse(r.data);
             fetchData();
         });
-    }, []);
+    }, [isOpen]);
 
     useEffect(() => {
-        console.log(authUser, 'aa')
         if (!authUser && !course) {
             return;
         }
@@ -177,14 +180,14 @@ export default function CourseDetailsPage({id}) {
                                             variant={"solid"}>Delete</Button>
                                 }
 
-                                {authUser ? !courseBelongsToUser ?
+                                {(authUser && authUser.id !== course.instructor_id) ? !courseBelongsToUser ?
                                         <Button onClick={addToMyList} leftIcon={<AddIcon/>} colorScheme='linkedin'
                                                 variant={"solid"}>Add to my list </Button>
                                         : <Button disabled={true} rightIcon={< CheckIcon/>} colorScheme='teal'
                                                   variant='outline'>
                                             Already in your list
                                         </Button>
-                                    : null
+                                    : <Button onClick={onOpen}>Edit Course</Button>
                                 }
 
 
@@ -267,8 +270,20 @@ export default function CourseDetailsPage({id}) {
                     <Flex w={'full'}>
                         <CourseRatings course={course} setAverageRating={setAverageRating}/>
                     </Flex>
+
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay/>
+                        <ModalContent>
+                            <ModalHeader>Edit Course</ModalHeader>
+                            <ModalCloseButton/>
+                            <ModalBody>
+                                <AddEditCourseComponent courseToEdit={course}/>
+                            </ModalBody>
+                        </ModalContent>
+                    </Modal>
                 </Flex>
             }
+
         </Container>
     );
 }

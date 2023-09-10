@@ -1,5 +1,3 @@
-'use client';
-
 import React, {useEffect, useState} from 'react';
 import {
     Box,
@@ -16,18 +14,18 @@ import {
     Textarea,
 } from '@chakra-ui/react';
 import {GetAllCategories} from '../../services/CategoryService';
-import {AddCourse, UploadFile} from '../../services/CoursesService';
+import {AddCourse, EditCourse, UploadFile} from '../../services/CoursesService';
 import FileUploader from '../../components/FileUploader';
 import {useNavigate} from 'react-router-dom';
 import {useAccessTokenState} from "../../context/AccessTokenContext";
 
-const Form1 = ({setStep, setCourseId}) => {
+const Form1 = ({setStep, setCourseId, courseToEdit}) => {
     const {authUser} = useAccessTokenState();
     const [options, setOptions] = useState(false);
     const [course, setCourse] = useState({
-        name: '',
-        description: '',
-        category_id: undefined,
+        name: courseToEdit?.name ?? '',
+        description: courseToEdit?.description ?? '',
+        category_id: courseToEdit?.category_id ?? undefined,
         instructor_id: authUser?.id
     });
 
@@ -43,6 +41,17 @@ const Form1 = ({setStep, setCourseId}) => {
     const handleSubmit = event => {
         event.preventDefault();
 
+        if (courseToEdit) {
+            EditCourse(courseToEdit.id, course)
+                .then(r => {
+                    setCourseId(courseToEdit.id);
+                    setStep(2);
+                    window.alert("Edited succesfully");
+                })
+
+            return;
+        }
+
         AddCourse(course)
             .then((r) => {
                 setCourseId(r.data.id);
@@ -54,15 +63,15 @@ const Form1 = ({setStep, setCourseId}) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <Heading w='100%' textAlign={'center'} fontWeight='normal' mb='2%'>
+            {!courseToEdit ? <Heading w='100%' textAlign={'center'} fontWeight='normal' mb='2%'>
                 Add Course
-            </Heading>
+            </Heading> : null}
             <Flex>
                 <FormControl mr='2%'>
                     <FormLabel htmlFor='name' fontWeight={'normal'}>
                         Course Name
                     </FormLabel>
-                    <Input id='name' placeholder='Name' onChange={handleChange('name')}/>
+                    <Input id='name' value={course.name} placeholder='Name' onChange={handleChange('name')}/>
                 </FormControl>
             </Flex>
 
@@ -71,10 +80,12 @@ const Form1 = ({setStep, setCourseId}) => {
                     <FormLabel htmlFor='email' fontWeight={'normal'}>
                         Description for course
                     </FormLabel>
-                    <Textarea id='description' type='text' onChange={handleChange('description')}/>
+                    <Textarea id='description' value={course.description} type='text'
+                              onChange={handleChange('description')}/>
                 </FormControl>
             </Flex>
 
+            <br/>
             <FormControl as={GridItem} colSpan={[6, 3]}>
                 <FormLabel
                     htmlFor='country'
@@ -96,6 +107,7 @@ const Form1 = ({setStep, setCourseId}) => {
                     size='sm'
                     w='full'
                     onChange={handleChange('category_id')}
+                    value={course.category_id}
                     rounded='md'>
                     {options && options.length > 0 && options.map((category, index) =>
                         <option key={index} value={category.id}> {category.name}</option>,
@@ -103,6 +115,7 @@ const Form1 = ({setStep, setCourseId}) => {
                 </Select>
             </FormControl>
 
+            <br/>
             <Button
                 w='7rem'
                 colorScheme='yellow'
@@ -115,14 +128,17 @@ const Form1 = ({setStep, setCourseId}) => {
     );
 };
 
-const Form2 = ({courseId}) => {
+const Form2 = ({courseId, setProgress}) => {
     const navigate = useNavigate();
     const [courseFile, setCourseFile] = useState(undefined);
+
+    useEffect(() => {
+        setProgress(100);
+    }, [])
+
     const handleSubmit = event => {
         event.preventDefault();
 
-        console.log(courseId, 'testtt')
-        console.log(courseFile, 'testttFileee')
         if (!courseId) {
             window.alert("Course was not set correctly")
         }
@@ -192,7 +208,7 @@ const Form2 = ({courseId}) => {
 };
 
 
-export default function AddCoursePage() {
+export default function AddEditCourseComponent({courseToEdit}) {
     const [courseId, setCourseId] = useState(null);
     const [step, setStep] = useState(1);
     const [progress, setProgress] = useState(50);
@@ -209,8 +225,8 @@ export default function AddCoursePage() {
                 <Progress hasStripe value={progress} mb='5%' mx='5%' colorScheme={'teal'} borderRadius={'20px'}
                           isAnimated></Progress>
                 {step === 1 ?
-                    <Form1 setStep={(value) => setStep(value)} setCourseId={setCourseId}/> :
-                    <Form2 courseId={courseId}/>}
+                    <Form1 setStep={(value) => setStep(value)} setCourseId={setCourseId} courseToEdit={courseToEdit}/> :
+                    <Form2 courseId={courseId} setProgress={setProgress}/>}
                 <ButtonGroup mt='5%' w='100%'>
                 </ButtonGroup>
             </Box>

@@ -6,7 +6,7 @@ import LogIn from "../pages/user/LogIn";
 import UserDetailsPage from "../pages/user/UserDetailsPage";
 import CoursesPage from "../pages/courses/CoursesPage";
 import CourseDetailsPage from "../pages/courses/CourseDetailsPage";
-import AddCoursePage from "../pages/courses/AddCoursePage";
+import AddEditCourseComponent from "../pages/courses/AddEditCourseComponent";
 import CategoriesPage from "../pages/category/CategoriesPage";
 import CategoryDetailsPage from "../pages/category/CategoryDetailsPage";
 import React from "react";
@@ -20,7 +20,7 @@ const routes = createRoutesFromElements(
         <Route path='/userDetails/' element={<UserDetailsPage/>}/>
         <Route path='/courses' element={<CoursesPage/>}/>
         <Route path='/courses/:id' element={<CourseDetailsPage/>}/>
-        <Route path='/courses/addCourse' element={<AddCoursePage/>}/>
+        <Route path='/courses/addCourse' element={<AddEditCourseComponent/>}/>
         <Route path='/categories' element={<CategoriesPage/>}/>
         <Route path='/categories/addCategory' element={<AddCategory/>}/>
         <Route path='/categories/:id' element={<CategoryDetailsPage/>}/>

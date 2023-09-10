@@ -38,11 +38,11 @@ class CourseController extends ApiController
 
     public function createCourse(Request $request)
     {
-
         $validated = $request->validate([
             "name" => 'required|string',
-            "description" => "required",
-            "category_id" => "required|int"
+            "description" => "string",
+            "category_id" => "required|int",
+            "instructor_id" => "required|int"
         ]);
 
         $course = Course::create($validated);
@@ -58,9 +58,10 @@ class CourseController extends ApiController
         }
 
         $validatedData = $request->validate([
-            "name" => 'string',
-            "description",
-            "category_id" => "int"
+            "name" => 'required|string',
+            "description" => 'string',
+            "category_id" => "required|int",
+            "instructor_id" => "required|int"
         ]);
 
         $course->update($validatedData);
