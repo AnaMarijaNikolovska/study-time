@@ -19,7 +19,7 @@ const AddCourse = (formData) => {
 };
 
 const EditCourse = (id, formData) => {
-  return axios.put(`${courseRoute}/${id}`, formData);
+  return axios.put(`${courseRoute}/update/${id}`, formData);
 };
 
 const DeleteCourse = (id) => {
